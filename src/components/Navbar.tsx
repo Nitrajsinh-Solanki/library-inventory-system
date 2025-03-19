@@ -19,7 +19,7 @@ const Navbar = () => {
           <div className="flex items-center">
             <button 
               onClick={() => handleNavigation('/')}
-              className="text-2xl font-bold text-blue-600"
+              className="text-2xl font-bold text-blue-600 cursor-pointer"
             >
               📚 BookNest
             </button>
@@ -27,13 +27,13 @@ const Navbar = () => {
           <div className="flex items-center space-x-4">
             <button 
               onClick={() => handleNavigation('/login')}
-              className="text-gray-700 hover:text-blue-600 px-3 py-2"
+              className="cursor-pointer text-gray-700 hover:text-blue-600 px-3 py-2"
             >
               Login
             </button>
             <button 
               onClick={() => handleNavigation('/register')}
-              className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+              className="bg-blue-600 text-white px-4 py-2 cursor-pointer rounded-md hover:bg-blue-700"
             >
               Register
             </button>

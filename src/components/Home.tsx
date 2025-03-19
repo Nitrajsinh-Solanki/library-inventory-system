@@ -3,11 +3,18 @@
 
 
 
-
+'use client'
 import { JSX } from "react";
 import { FaBookOpen, FaClock, FaGlobe, FaUserShield, FaSearch, FaMobileAlt, FaBell, FaDatabase } from "react-icons/fa";
+import Link from 'next/link';
+import { useRouter } from "next/navigation";
 
 const Home = () => {
+  const router = useRouter();
+  const joinBtn = () =>{
+    router.push("/register")
+  }
+
   return (
     <div className="flex flex-col flex-grow">
       {/* Hero Section */}
@@ -24,7 +31,7 @@ const Home = () => {
             <button className="bg-yellow-400 text-blue-900 px-6 py-2 rounded-lg font-semibold hover:bg-yellow-500 transition duration-300 cursor-pointer">
               Explore Library
             </button>
-            <button className="ml-4 border-2 border-white px-6 py-2 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition duration-300 cursor-pointer">
+            <button className="ml-4 border-2 border-white px-6 py-2 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition duration-300 cursor-pointer" onClick={joinBtn}>
               Join Now
             </button>
           </div>
