@@ -1,3 +1,7 @@
+// library-inventory-system\src\lib\models\Book.ts
+
+
+
 import mongoose from 'mongoose';
 
 const bookSchema = new mongoose.Schema({

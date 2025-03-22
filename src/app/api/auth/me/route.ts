@@ -1,3 +1,6 @@
+// library-inventory-system\src\app\api\auth\me\route.ts
+
+
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import dbConnect from '@/lib/mongodb/connect';

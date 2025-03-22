@@ -1,3 +1,5 @@
+// library-inventory-system\src\components\BookGrid.tsx
+
 import Image from 'next/image';
 import Link from 'next/link';
 
