@@ -1,5 +1,7 @@
 // library-inventory-system\src\components\IsbnFetchForm.tsx
 
+
+
 "use client";
 
 import { useState } from "react";
@@ -9,6 +11,7 @@ import {
   FiFileText,
   FiAlertCircle,
   FiCheckCircle,
+  FiCpu,
 } from "react-icons/fi";
 import { motion } from "framer-motion";
 
@@ -33,6 +36,7 @@ interface OpenLibraryBook {
 const IsbnFetchForm: React.FC<IsbnFetchFormProps> = ({ onSuccess }) => {
   const [isbn, setIsbn] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isGeneratingDescription, setIsGeneratingDescription] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [bookData, setBookData] = useState<OpenLibraryBook | null>(null);
@@ -108,6 +112,57 @@ const IsbnFetchForm: React.FC<IsbnFetchFormProps> = ({ onSuccess }) => {
       setIsLoading(false);
     }
   };
+
+  const generateDescriptionWithAI = async () => {
+    if (!bookData) {
+      setError("Please fetch a book first");
+      return;
+    }
+  
+    setIsGeneratingDescription(true);
+    setError("");
+  
+    try {
+      // ✅ Improved prompt for AI
+      const prompt = `Generate a compelling and engaging book description for:
+      - **Title**: "${bookData.title}"
+      - **Author**: ${authorDisplay || "Unknown"}
+      - **Published**: ${bookData.publish_date || "Unknown"}
+      - **Publisher**: ${bookData.publishers?.[0] || "Unknown"}
+      
+      Focus on:
+      - The book's theme, genre, and overall plot in a **concise and engaging** manner.
+      - Why readers would find it interesting.
+      - Keep it **informative, exciting, and around 150-200 words** without unnecessary repetition.`;
+  
+      // ✅ Call API
+      const response = await fetch("/api/generate-description", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt }),
+      });
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to generate description");
+      }
+  
+      const data = await response.json();
+  
+      // ✅ Ensure valid AI response before updating state
+      const generatedDescription = data.description?.trim();
+      if (!generatedDescription) {
+        throw new Error("AI did not return a valid description");
+      }
+  
+      setFormData({ ...formData, description: generatedDescription });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An unexpected error occurred");
+    } finally {
+      setIsGeneratingDescription(false);
+    }
+  };
+  
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -307,9 +362,33 @@ const IsbnFetchForm: React.FC<IsbnFetchFormProps> = ({ onSuccess }) => {
 
           {/* Description */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Description <span className="text-red-500">*</span>
-            </label>
+            <div className="flex justify-between items-center mb-1">
+              <label className="block text-sm font-medium text-gray-700">
+                Description <span className="text-red-500">*</span>
+              </label>
+              <button
+                type="button"
+                onClick={generateDescriptionWithAI}
+                disabled={isGeneratingDescription || !bookData}
+                className={`inline-flex items-center px-3 py-1 text-xs border border-transparent rounded-md shadow-sm font-medium text-white bg-purple-600 ${
+                  isGeneratingDescription || !bookData
+                    ? "opacity-70 cursor-not-allowed"
+                    : "hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+                }`}
+              >
+                {isGeneratingDescription ? (
+                  <>
+                    <div className="animate-spin mr-1 h-3 w-3 border-2 border-white border-t-transparent rounded-full"></div>
+                    Generating...
+                  </>
+                ) : (
+                  <>
+                    <FiCpu className="mr-1" />
+                    Write with AI
+                  </>
+                )}
+              </button>
+            </div>
             <div className="relative rounded-md shadow-sm">
               <div className="absolute inset-y-0 left-0 pl-3 pt-3 pointer-events-none">
                 <FiFileText className="h-5 w-5 text-gray-400" />
@@ -354,7 +433,6 @@ const IsbnFetchForm: React.FC<IsbnFetchFormProps> = ({ onSuccess }) => {
               <option value="Other">Other</option>
             </select>
           </div>
-
           {/* Total Copies */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -419,3 +497,5 @@ const IsbnFetchForm: React.FC<IsbnFetchFormProps> = ({ onSuccess }) => {
 };
 
 export default IsbnFetchForm;
+
+      

@@ -67,6 +67,7 @@ const bookSchema = new mongoose.Schema({
 // Update timestamp on save
 bookSchema.pre('save', function(next) {
   this.updatedAt = new Date();
+  this.available = this.availableCopies > 0;
   next();
 });
 

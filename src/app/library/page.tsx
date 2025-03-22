@@ -1,6 +1,7 @@
 // library-inventory-system\src\app\library\page.tsx
 
 'use client';
+
 import { useState, useEffect } from 'react';
 import LibraryNavbar from '@/components/LibraryNavbar';
 import Footer from '@/components/Footer';

@@ -7,7 +7,7 @@ export async function middleware(request: NextRequest) {
   const authToken = request.cookies.get('auth_token')?.value;
   
   // Check if the path is a protected route
-  const isManageBooksRoute = request.nextUrl.pathname.startsWith('/manage-books');
+  const isManageBooksRoute = request.nextUrl.pathname.startsWith('/manage-books') || request.nextUrl.pathname.startsWith('/manage-fare');
   
   // If trying to access protected routes without auth token, redirect to login
   if (isManageBooksRoute && !authToken) {
@@ -49,5 +49,5 @@ export async function middleware(request: NextRequest) {
 
 // Configure the middleware to run only on specific paths
 export const config = {
-  matcher: ['/manage-books/:path*']
+  matcher: ['/manage-books/:path*', '/manage-fare']
 };

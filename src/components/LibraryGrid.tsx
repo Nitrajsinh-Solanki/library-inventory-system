@@ -1,12 +1,14 @@
-// library-inventory-system\src\components\BookGrid.tsx
+// library-inventory-system\src\components\LibraryGrid.tsx
 
 
-'use client';
 
-import { useState } from 'react';
-import BookCard from './BookCard';
-import BookDetails from './BookDetails';
-import { FiSearch, FiFilter, FiX } from 'react-icons/fi';
+
+"use client";
+
+import { useState, useEffect } from "react";
+import BookCard from "./BookCard";
+import BookDetails from "./BookDetails";
+import { FiSearch, FiFilter, FiX } from "react-icons/fi";
 
 interface Book {
   _id: string;
@@ -21,20 +23,43 @@ interface Book {
   available: boolean;
 }
 
-interface BookGridProps {
-  books: Book[];
-}
-
-const BookGrid: React.FC<BookGridProps> = ({ books }) => {
+const LibraryGrid = () => {
+  const [books, setBooks] = useState<Book[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [selectedBookId, setSelectedBookId] = useState<string | null>(null);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filterGenre, setFilterGenre] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterGenre, setFilterGenre] = useState("");
   const [availableOnly, setAvailableOnly] = useState(false);
+  const [genres, setGenres] = useState<string[]>([]);
 
-  // Extract unique genres
-  const genres = Array.from(
-    new Set(books.map((book) => book.genre).filter(Boolean))
-  ) as string[];
+  useEffect(() => {
+    const fetchBooks = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch("/api/books");
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch books");
+        }
+
+        const data = await response.json();
+        setBooks(data);
+
+        // Extract unique genres
+        const uniqueGenres = Array.from(
+          new Set(data.map((book: Book) => book.genre).filter(Boolean))
+        ) as string[];
+        setGenres(uniqueGenres);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "An error occurred");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBooks();
+  }, []);
 
   const handleSelectBook = (bookId: string) => {
     setSelectedBookId(bookId);
@@ -57,8 +82,8 @@ const BookGrid: React.FC<BookGridProps> = ({ books }) => {
   };
 
   const clearFilters = () => {
-    setSearchTerm('');
-    setFilterGenre('');
+    setSearchTerm("");
+    setFilterGenre("");
     setAvailableOnly(false);
   };
 
@@ -72,8 +97,24 @@ const BookGrid: React.FC<BookGridProps> = ({ books }) => {
     return matchesSearch && matchesGenre && matchesAvailability;
   });
 
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-blue-600"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="bg-red-50 text-red-600 p-4 rounded-lg">
+        <p>{error}</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="container mx-auto px-4 py-4">
+    <div className="container mx-auto px-4 py-8">
       {/* Search and Filter Bar */}
       <div className="bg-white rounded-lg shadow-md p-4 mb-8">
         <div className="flex flex-col md:flex-row md:items-center space-y-4 md:space-y-0 md:space-x-4">
@@ -168,4 +209,4 @@ const BookGrid: React.FC<BookGridProps> = ({ books }) => {
   );
 };
 
-export default BookGrid;
+export default LibraryGrid;

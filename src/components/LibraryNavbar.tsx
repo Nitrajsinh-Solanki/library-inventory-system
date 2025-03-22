@@ -1,8 +1,10 @@
+// library-inventory-system\src\components\LibraryNavbar.tsx
 'use client';
+
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { FiMenu, FiX, FiUser, FiBook, FiSettings, FiLogOut } from 'react-icons/fi';
+import { FiMenu, FiX, FiUser, FiBook, FiSettings, FiLogOut, FiDollarSign, FiCalendar } from 'react-icons/fi';
 
 interface LibraryNavbarProps {
   userRole: string | null;
@@ -52,10 +54,18 @@ const LibraryNavbar: React.FC<LibraryNavbarProps> = ({ userRole }) => {
               </Link>
             )}
             
-            {userRole === 'librarian' && (
-              <Link href="/manage-books" className="text-white hover:text-blue-200 px-3 py-2">
-                Manage Books
-              </Link>
+            {(userRole === 'librarian' || userRole === 'admin') && (
+              <>
+                <Link href="/manage-books" className="text-white hover:text-blue-200 px-3 py-2">
+                  Manage Books
+                </Link>
+                <Link href="/upcoming-returns" className="text-white hover:text-blue-200 px-3 py-2">
+                  Upcoming Returns
+                </Link>
+                <Link href="/manage-fare" className="text-white hover:text-blue-200 px-3 py-2">
+                  Manage Fare
+                </Link>
+              </>
             )}
             
             {userRole === 'user' && (
@@ -116,17 +126,39 @@ const LibraryNavbar: React.FC<LibraryNavbarProps> = ({ userRole }) => {
               </Link>
             )}
             
-            {userRole === 'librarian' && (
-              <Link 
-                href="/manage-books" 
-                className="text-white hover:bg-indigo-700 block px-3 py-2 rounded-md text-base font-medium"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                <div className="flex items-center">
-                  <FiBook className="mr-2" />
-                  Manage Books
-                </div>
-              </Link>
+            {(userRole === 'librarian' || userRole === 'admin') && (
+              <>
+                <Link 
+                  href="/manage-books" 
+                  className="text-white hover:bg-indigo-700 block px-3 py-2 rounded-md text-base font-medium"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <div className="flex items-center">
+                    <FiBook className="mr-2" />
+                    Manage Books
+                  </div>
+                </Link>
+                <Link 
+                  href="/upcoming-returns" 
+                  className="text-white hover:bg-indigo-700 block px-3 py-2 rounded-md text-base font-medium"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <div className="flex items-center">
+                    <FiCalendar className="mr-2" />
+                    Upcoming Returns
+                  </div>
+                </Link>
+                <Link 
+                  href="/manage-fare" 
+                  className="text-white hover:bg-indigo-700 block px-3 py-2 rounded-md text-base font-medium"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <div className="flex items-center">
+                    <FiDollarSign className="mr-2" />
+                    Manage Fare
+                  </div>
+                </Link>
+              </>
             )}
             
             {userRole === 'user' && (

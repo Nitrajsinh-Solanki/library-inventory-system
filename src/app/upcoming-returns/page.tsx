@@ -1,19 +1,20 @@
-// library-inventory-system\src\app\manage-books\page.tsx
+// library-inventory-system\src\app\upcoming-returns\page.tsx
+
 
 
 
 import React from 'react';
+import UpcomingReturnsContent from '@/components/UpcomingReturnsContent';
 import { getCurrentUser } from '@/lib/utils/auth';
 import { redirect } from 'next/navigation';
 import LibraryNavbar from '@/components/LibraryNavbar';
-import ManageBooksClient from '@/components/ManageBooksClient';
 
 export const metadata = {
-  title: 'Manage Books | BookNest',
-  description: 'Add, edit, and manage library book inventory',
+  title: 'Upcoming Returns | BookNest',
+  description: 'Manage upcoming book returns and track overdue books',
 };
 
-export default async function ManageBooksPage() {
+export default async function UpcomingReturnsPage() {
   // Server-side check for librarian/admin access
   const user = await getCurrentUser();
   
@@ -24,9 +25,9 @@ export default async function ManageBooksPage() {
   return (
     <>
       <LibraryNavbar userRole={user.role} />
-      <ManageBooksClient />
+      <div className="container mx-auto px-4 py-8">
+        <UpcomingReturnsContent />
+      </div>
     </>
   );
 }
-
-

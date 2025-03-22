@@ -1,16 +1,50 @@
 // library-inventory-system\src\app\api\books\[id]\route.ts
 
-
 import { NextRequest, NextResponse } from 'next/server';
 import { Book } from '@/lib/models/Book';
 import dbConnect from '@/lib/mongodb/connect';
 import { getCurrentUser } from '@/lib/utils/auth';
 import { deleteFileFromSupabase } from '@/lib/supabase/storage';
 
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+interface RouteParams {
+  params: {
+    id: string;
+  };
+}
+
+export async function GET(request: NextRequest, { params }: RouteParams) {
+  try {
+    await dbConnect();
+    
+    const bookId = params.id;
+    
+    if (!bookId) {
+      return NextResponse.json(
+        { message: 'Book ID is required' },
+        { status: 400 }
+      );
+    }
+    
+    const book = await Book.findById(bookId);
+    
+    if (!book) {
+      return NextResponse.json(
+        { message: 'Book not found' },
+        { status: 404 }
+      );
+    }
+    
+    return NextResponse.json(book);
+  } catch (error) {
+    console.error('Error fetching book:', error);
+    return NextResponse.json(
+      { message: 'Failed to fetch book' },
+      { status: 500 }
+    );
+  }
+}
+
+export async function PUT(request: NextRequest, { params }: RouteParams) {
   try {
     await dbConnect();
     
@@ -25,34 +59,52 @@ export async function PUT(
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
     
-    const { id } = params;
+    const bookId = params.id;
     const data = await request.json();
     
+    if (!bookId) {
+      return NextResponse.json(
+        { message: 'Book ID is required' },
+        { status: 400 }
+      );
+    }
+    
     // Find the existing book
-    const existingBook = await Book.findById(id);
+    const existingBook = await Book.findById(bookId);
     if (!existingBook) {
       return NextResponse.json({ error: 'Book not found' }, { status: 404 });
     }
     
-    // If cover image is being updated, delete the old one from Supabase
+    // Handle cover image deletion if changed
     if (data.coverImage && data.coverImage !== existingBook.coverImage) {
       await deleteFileFromSupabase(existingBook.coverImage);
     }
     
-    // Update the book
-    const updatedBook = await Book.findByIdAndUpdate(id, data, { new: true });
+    // Find and update the book
+    const updatedBook = await Book.findByIdAndUpdate(
+      bookId,
+      { $set: data },
+      { new: true, runValidators: true }
+    );
+    
+    if (!updatedBook) {
+      return NextResponse.json(
+        { message: 'Book not found' },
+        { status: 404 }
+      );
+    }
     
     return NextResponse.json(updatedBook);
   } catch (error) {
     console.error('Error updating book:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json(
+      { message: 'Failed to update book' },
+      { status: 500 }
+    );
   }
 }
 
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(request: NextRequest, { params }: RouteParams) {
   try {
     await dbConnect();
     
@@ -67,10 +119,17 @@ export async function DELETE(
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
     
-    const { id } = params;
+    const bookId = params.id;
+    
+    if (!bookId) {
+      return NextResponse.json(
+        { message: 'Book ID is required' },
+        { status: 400 }
+      );
+    }
     
     // Find the book to get its image URL
-    const book = await Book.findById(id);
+    const book = await Book.findById(bookId);
     if (!book) {
       return NextResponse.json({ error: 'Book not found' }, { status: 404 });
     }
@@ -81,33 +140,21 @@ export async function DELETE(
     }
     
     // Delete the book from MongoDB
-    await Book.findByIdAndDelete(id);
+    const deletedBook = await Book.findByIdAndDelete(bookId);
+    
+    if (!deletedBook) {
+      return NextResponse.json(
+        { message: 'Book not found' },
+        { status: 404 }
+      );
+    }
     
     return NextResponse.json({ message: 'Book deleted successfully' });
   } catch (error) {
     console.error('Error deleting book:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
-  }
-}
-
-
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  try {
-    await dbConnect();
-    
-    const { id } = params;
-    const book = await Book.findById(id);
-    
-    if (!book) {
-      return NextResponse.json({ error: 'Book not found' }, { status: 404 });
-    }
-    
-    return NextResponse.json(book);
-  } catch (error) {
-    console.error('Error fetching book:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json(
+      { message: 'Failed to delete book' },
+      { status: 500 }
+    );
   }
 }
