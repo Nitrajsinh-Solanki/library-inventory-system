@@ -116,6 +116,7 @@ GEMINI_API_KEY="your-google-gemini-api-key"
 ```
 
 📌 **Resources for setting up .env variables:**  
+- **NodeMailer (Email SMTP):** [🔗 Guide](https://medium.com/@dhananjay_yadav/send-mail-using-nodemailer-in-node-js-3183366b1b1c)
 - 📧 **NodeMailer (Email SMTP):** [🔗 Guide](https://medium.com/@kathishcivil94/sending-emails-in-node-js-with-nodemailer-36c6e32dc37e)  
 - 🗄 **Supabase Configuration:** [🔗 Guide](https://medium.com/@poojanbhalodiya2003/getting-started-with-supabase-a-step-by-step-guide-5c024d860271)  
 - 🍃 **MongoDB Atlas Setup:** [🔗 Guide](https://medium.com/@xuwei19850423/free-mongodb-cluster-on-mongodb-atlas-1443a87da347)  
