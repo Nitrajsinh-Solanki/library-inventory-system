@@ -1,4 +1,7 @@
 // library-inventory-system\src\components\LibraryNavbar.tsx
+
+
+
 'use client';
 
 import { useState } from 'react';
@@ -49,7 +52,7 @@ const LibraryNavbar: React.FC<LibraryNavbarProps> = ({ userRole }) => {
             </Link>
             
             {userRole === 'admin' && (
-              <Link href="/admin-dashboard" className="text-white hover:text-blue-200 px-3 py-2">
+              <Link href="/dashboard" className="text-white hover:text-blue-200 px-3 py-2">
                 Admin Dashboard
               </Link>
             )}
@@ -115,7 +118,7 @@ const LibraryNavbar: React.FC<LibraryNavbarProps> = ({ userRole }) => {
             
             {userRole === 'admin' && (
               <Link 
-                href="/admin-dashboard" 
+                href="/dashboard" 
                 className="text-white hover:bg-indigo-700 block px-3 py-2 rounded-md text-base font-medium"
                 onClick={() => setIsMenuOpen(false)}
               >
