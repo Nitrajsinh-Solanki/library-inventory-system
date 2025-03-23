@@ -172,6 +172,44 @@ role: {
 ```
 
 ---
+### 🔧 **Configuring `next.config.js` for Supabase**  
+
+To ensure proper image loading from Supabase Storage, update your **`next.config.js`** file as follows:  
+
+```typescript
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  images: {
+    domains: [
+      'your-supabase-url.supabase.co', // Replace with your actual Supabase domain (without "https://")
+      'covers.openlibrary.org'  
+    ],
+  },
+};
+
+export default nextConfig;
+```
+
+📌 **Important:**  
+Replace `'your-supabase-url.supabase.co'` with the **`NEXT_PUBLIC_SUPABASE_URL`** from your `.env.local` file, but **without "https://"**.  
+
+For example, if your **`.env.local`** contains:  
+```ini
+NEXT_PUBLIC_SUPABASE_URL=https://xcgtkffloifpunwssmpc.supabase.co
+```
+Then, update your `next.config.js` like this:  
+```typescript
+images: {
+  domains: [
+    'xcgtkffloifpunwssmpc.supabase.co', // Without "https://"
+    'covers.openlibrary.org'
+  ],
+},
+```  
+
+This ensures **Supabase-hosted images** are properly loaded in your Next.js application. 🚀
+
 
 ## 🚀 **Future Enhancements**  
 
