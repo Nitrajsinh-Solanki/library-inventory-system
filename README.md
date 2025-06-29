@@ -1,3 +1,15 @@
+# 🏆 Library & Book Store Inventory System — 🥉 3rd Place | 💰 Won $90!
+
+This is my award-winning submission for the StackUp Hackathon, where I built a complete **Library & Book Store Inventory System** using **Next.js**, and secured **3rd place**, earning a **$90 prize**! 🎉📚
+
+---
+
+## 📸 Screenshots
+
+ ![](./Screenshot%202025-06-29%20144804.png)  ![](./Screenshot%202025-06-29%20144818.png)  ![](./Screenshot%202025-06-29%20144838.png) 
+
+ ![](./Screenshot%202025-06-29%20144854.png) 
+
 
 ---
 
